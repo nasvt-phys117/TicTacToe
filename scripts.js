@@ -61,61 +61,6 @@ function gameController() {
 
     const getActivePlayer = () => activePlayer;
 
-    const winConditions = (noOfRounds) => {
-        if (noOfRounds < 5)
-            return;
-
-        const currentBoard = board.getBoard();
-
-        //horizontal check
-        for (let i = 0; i < currentBoard.length(); i++) {
-            let rowScore = 0;
-            for (let j = 0; j < currentBoard[0].length(); j++) //iterate over columns
-            {
-                if (currentBoard[i][j] == players[0].mark)
-                    rowScore++;
-                else if (currentBoard[i][j] == players[1].mark)
-                    rowScore--;
-                else
-                    continue;
-            }
-            if (rowScore == 3) {
-                //player 1 wins
-            }
-            if (rowScore == -3) {
-                //player 2 wins
-            }
-        }
-        //vertical check
-        for (let j = 0; j < currentBoard[0].length(); j++) {
-            let columnScore = 0;
-            for (let i = 0; i < currentBoard.length(); i++)
-            //iterate over columns
-            {
-                if (currentBoard[i][j] == players[0].mark)
-                    columnScore++;
-                else if (currentBoard[i][j] == players[1].mark)
-                    columnScore--;
-                else
-                    continue;
-            }
-            if (columnScore == 3) {
-                //player 1 wins
-            }
-            if (columnScore == -3) {
-                //player 2 wins
-            }
-        }
-        //diagonal check
-        if (currentBoard[0][0] == currentBoard[1][1] == currentBoard[2][2] == players[0].mark || currentBoard[0][2] == currentBoard[1][1] == currentBoard[2][0] == players[0].mark) {
-            //player 1 wins
-        }
-
-        if (currentBoard[0][0] == currentBoard[1][1] == currentBoard[2][2] == players[0].mark || currentBoard[0][2] == currentBoard[1][1] == currentBoard[2][0] == players[1].mark) {
-            //player 2 wins
-        }
-    }
-
     const playRound = (row, column) => {
         //add logic for not successful attempts
         if (!board.checkAvailable(row, column)) {
@@ -124,12 +69,75 @@ function gameController() {
         }
         console.log(`${getActivePlayer().name} put ${getActivePlayer().mark} in (${row},${column})`);
         board.addMark(row, column, activePlayer.mark);
+        numberOfRounds++;
         //wincon
-        winConditions(numberOfRounds);
+        if (numberOfRounds >= 5) {
+            var currentBoard = board.getBoard();
+
+            //horizontal check
+            for (let i = 0; i < currentBoard.length; i++) {
+                let rowScore = 0;
+                for (let j = 0; j < currentBoard[0].length; j++) //iterate over columns
+                {
+                    if (currentBoard[i][j] == players[0].mark)
+                        rowScore++;
+                    else if (currentBoard[i][j] == players[1].mark)
+                        rowScore--;
+                    else
+                        continue;
+                }
+                if (rowScore == 3) {
+                    //player 1 wins
+                    console.log("Player 1 wins!");
+                    return;
+                }
+                if (rowScore == -3) {
+                    //player 2 wins
+                    console.log("Player 2 wins!");
+                    return;
+                }
+            }
+            //vertical check
+            for (let j = 0; j < currentBoard[0].length; j++) {
+                let columnScore = 0;
+                for (let i = 0; i < currentBoard.length; i++)
+                //iterate over rows
+                {
+                    if (currentBoard[i][j] == players[0].mark)
+                        columnScore++;
+                    else if (currentBoard[i][j] == players[1].mark)
+                        columnScore--;
+                    else
+                        continue;
+                }
+                if (columnScore == 3) {
+                    //player 1 wins
+                    console.log("Player 1 wins!");
+                    return;
+                }
+                if (columnScore == -3) {
+                    //player 2 wins
+                    console.log("Player 2 wins!");
+                    return;
+                }
+            }
+            //diagonal check
+            if (currentBoard[0][0] == currentBoard[1][1] == currentBoard[2][2] == players[0].mark || currentBoard[0][2] == currentBoard[1][1] == currentBoard[2][0] == players[0].mark) {
+                //player 1 wins
+                console.log("Player 1 wins!");
+                    return;
+            }
+
+            if (currentBoard[0][0] == currentBoard[1][1] == currentBoard[2][2] == players[0].mark || currentBoard[0][2] == currentBoard[1][1] == currentBoard[2][0] == players[1].mark) {
+                //player 2 wins
+                console.log("Player 2 wins!");
+                    return;
+            }
+        }
         //switching turn
         switchPlayerTurn();
         printNewRound();
-        numberOfRounds++;
+        
     }
 
     return { playRound, getActivePlayer };
@@ -137,7 +145,10 @@ function gameController() {
 
 //testing
 const newGame = gameController();
+newGame.playRound(0, 0);
+newGame.playRound(1, 1);
+newGame.playRound(0, 2);
+newGame.playRound(0, 1);
 newGame.playRound(1, 2);
-newGame.playRound(1, 2);
-newGame.playRound(2, 2);
+newGame.playRound(2, 1);
 
